@@ -8,49 +8,17 @@
     body {
       margin: 0;
       background: black;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
-
-    /* 不改變影片原本尺寸 */
     video {
-      display: block;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
     }
   </style>
 </head>
 <body>
-  <video
-    id="bgVideo"
-    autoplay
-    muted
-    loop
-    playsinline
-    webkit-playsinline
-  >
+  <video autoplay muted loop playsinline>
     <source src="B電腦＿壓縮.mp4" type="video/mp4" />
   </video>
-
-  <script>
-    const video = document.getElementById("bgVideo");
-
-    // 一進來就先播（靜音）—— 這一步通常是允許的
-    video.play().catch(() => {
-      // 有些瀏覽器還是會小小鬧脾氣，但大多會成功
-    });
-
-    function enableSoundOnce() {
-      video.muted = false; // 解除靜音
-      video.play().catch(() => {});
-      // 解除後就不再綁事件
-      document.removeEventListener("pointerdown", enableSoundOnce);
-      document.removeEventListener("touchstart", enableSoundOnce);
-    }
-
-    // 第一次點畫面 / 觸控 / 滑動時，幫他開聲音（畫面沒有按鈕，看起來是自動的）
-    document.addEventListener("pointerdown", enableSoundOnce, { once: true });
-    document.addEventListener("touchstart", enableSoundOnce, { once: true });
-  </script>
 </body>
 </html>
