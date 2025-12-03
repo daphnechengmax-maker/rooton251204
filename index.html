@@ -1,33 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>影片展示</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       background: black;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
+    /* 不設定 width / height，使用影片原始尺寸 */
     video {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;   /* 保持比例並填滿畫面 */
+      display: block;
+      /* 如果很在意鋸齒，可以開這行，但不是必要
+      image-rendering: auto;
+      */
     }
   </style>
 </head>
 <body>
+  <video
+    id="bgVideo"
+    autoplay
+    loop
+    playsinline
+    webkit-playsinline
+  >
+    <source src="B電腦＿壓縮.mp4" type="video/mp4" />
+    你的瀏覽器不支援 HTML5 影片
+  </video>
 
-<video id="bgVideo" autoplay loop playsinline>
-  <source src="B電腦＿壓縮.mp4" type="video/mp4">
-</video>
+  <script>
+    const video = document.getElementById("bgVideo");
 
-<script>
-  const video = document.getElementById('bgVideo');
-  window.addEventListener('click', () => {
+    // 一開始就確保不是靜音
     video.muted = false;
-    video.play();
-  });
-</script>
 
+    function tryPlay() {
+      video.play().catch((err) => {
+        console.warn("自動播放被瀏覽器阻擋，需使用者互動才可播放有聲音。", err);
+      });
+    }
+
+    if (video.readyState >= 2) {
+      // 已經可以播放
+      tryPlay();
+    } else {
+      // 等到可以播放時再嘗試
+      video.addEventListener("canplay", tryPlay, { once: true });
+    }
+  </script>
 </body>
-</html>
 </html>
