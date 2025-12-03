@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>影片展示</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
       background: black;
@@ -18,12 +14,9 @@
       align-items: center;
     }
 
-    /* 不設定 width / height，使用影片原始尺寸 */
+    /* 不改變影片原本尺寸 */
     video {
       display: block;
-      /* 如果很在意鋸齒，可以開這行，但不是必要
-      image-rendering: auto;
-      */
     }
   </style>
 </head>
@@ -31,33 +24,33 @@
   <video
     id="bgVideo"
     autoplay
+    muted
     loop
     playsinline
     webkit-playsinline
   >
     <source src="B電腦＿壓縮.mp4" type="video/mp4" />
-    你的瀏覽器不支援 HTML5 影片
   </video>
 
   <script>
     const video = document.getElementById("bgVideo");
 
-    // 一開始就確保不是靜音
-    video.muted = false;
+    // 一進來就先播（靜音）—— 這一步通常是允許的
+    video.play().catch(() => {
+      // 有些瀏覽器還是會小小鬧脾氣，但大多會成功
+    });
 
-    function tryPlay() {
-      video.play().catch((err) => {
-        console.warn("自動播放被瀏覽器阻擋，需使用者互動才可播放有聲音。", err);
-      });
+    function enableSoundOnce() {
+      video.muted = false; // 解除靜音
+      video.play().catch(() => {});
+      // 解除後就不再綁事件
+      document.removeEventListener("pointerdown", enableSoundOnce);
+      document.removeEventListener("touchstart", enableSoundOnce);
     }
 
-    if (video.readyState >= 2) {
-      // 已經可以播放
-      tryPlay();
-    } else {
-      // 等到可以播放時再嘗試
-      video.addEventListener("canplay", tryPlay, { once: true });
-    }
+    // 第一次點畫面 / 觸控 / 滑動時，幫他開聲音（畫面沒有按鈕，看起來是自動的）
+    document.addEventListener("pointerdown", enableSoundOnce, { once: true });
+    document.addEventListener("touchstart", enableSoundOnce, { once: true });
   </script>
 </body>
 </html>
